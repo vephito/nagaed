@@ -1,25 +1,29 @@
 # NagaEd account demo
 
-A small React frontend with an Express API, MySQL, and a FastAPI username suggestion service. Users can register, log in, view their account, and optionally get username ideas from their interests.
+A small account app built with React, Express, MySQL, and FastAPI.
 
 ## Contact
 
 Vephito — [vephitodasai5@gmail.com](mailto:vephitodasai5@gmail.com)
+
+## Features
+
+- Register with a username, email, password, and address.
+- Log in and view your profile. Passwords are hashed, and login uses a JWT.
+- Enter interests to get three AI username suggestions when a Groq key is configured.
 
 ## Run
 
 Start Docker, then run these commands from the project root:
 
 ```bash
-cp .env.example .env
+cp -n .env.example .env
 docker compose up
 ```
 
-The example settings start every container. Replace the sample `JWT_SECRET` before using the app outside local testing. Add your own `GROQ_API_KEY` to `.env` to enable username suggestions.
+These commands start all four services. The `-n` flag keeps an existing `.env` file. Registration, login, and profile viewing work with the example settings. AI username suggestions require a private `GROQ_API_KEY` in `.env`; Groq cannot generate them without a key. Keep that key out of `.env.example` and other shared files.
 
 Open the frontend at http://localhost:8080. The Express API is at http://localhost:3000; http://localhost:3000/health checks its database connection. FastAPI docs are at http://localhost:8000/docs. MySQL is available only to the containers. If a host port is busy, change `FRONTEND_PORT`, `PORT`, or `AI_PORT` in `.env`.
-
-The Groq key is needed only when requesting username suggestions. The FastAPI service and `/docs` still start without it.
 
 ## Suggest usernames
 
@@ -29,7 +33,7 @@ curl -X POST http://localhost:8000/api/suggest-username \
   -d '{"interests":["music","coding"]}'
 ```
 
-The response is `{ "suggestions": ["name1", "name2", "name3"] }`. Malformed input returns `422`, a missing Groq key returns `503`, and a Groq failure returns `502`.
+With a Groq key, the response is `{ "suggestions": ["name1", "name2", "name3"] }`. Malformed input returns `422`, a missing key returns `503`, and a Groq failure returns `502`.
 
 To stop the containers, press Ctrl+C. Run `docker compose down` to remove the containers while keeping the MySQL data volume. After changing code, run `docker compose up --build` to rebuild the images.
 
