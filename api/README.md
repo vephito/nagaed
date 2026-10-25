@@ -7,11 +7,11 @@ This is Task 1's Express API. Docker Compose also starts the frontend, FastAPI s
 You need Docker running. From the project root:
 
 ```bash
-cp .env.example .env
+cp -n .env.example .env
 docker compose up
 ```
 
-Compose waits for MySQL to be healthy before starting the API. The frontend is at http://localhost:8080. The API is at http://localhost:3000 and `GET /health` checks its database connection. Replace the sample `JWT_SECRET` in `.env` before using the app outside local testing.
+Compose waits for MySQL to be healthy before starting the API. The frontend is at http://localhost:8080. The API is at http://localhost:3000 and `GET /health` checks its database connection.
 
 If port 3000 is busy, change `PORT` in `.env` to another host port, such as `3001`. After changing API code, run `docker compose up --build` to rebuild its image.
 
@@ -47,7 +47,7 @@ A successful request returns HTTP `200` with a signed JWT and the user's ID and 
 { "token": "<JWT>", "user": { "id": 1, "username": "alex_01" } }
 ```
 
-The token expires after one hour. Missing or malformed fields return `400`; an incorrect email or password returns `401` with `"Invalid credentials."`. Set `JWT_SECRET` in `.env` to a random value and do not share that file.
+The token expires after one hour. Missing or malformed fields return `400`; an incorrect email or password returns `401` with `"Invalid credentials."`. The JWT secret is loaded from `.env`, which should not be shared.
 
 ## Get your user record
 
